@@ -1,14 +1,6 @@
-import mongoose, {Schema, Document} from "mongoose";
-
-
-export interface IUser extends Document {
-    username: string;
-    email: string;
-    password: string;
-    location?: string;
-    bio?: string;
-    profileImage?: string
-}
+import mongoose, {Schema } from "mongoose";
+import { IUserDocument } from "../interfaces/user.interface";
+import { addBaseSchemaConfig } from "../utils/addBaseSchemaConfig";
 
 const UserSchema: Schema = new Schema(
     {
@@ -22,8 +14,11 @@ const UserSchema: Schema = new Schema(
     },
     {timestamps: true}
 )
+addBaseSchemaConfig(UserSchema);
+
+UserSchema.index({ username: 'text', email: 'text', bio: 'text', location: 'text' });
 
 
-const UserModel = mongoose.model<IUser>('User', UserSchema);
+const UserModel = mongoose.model<IUserDocument>('User', UserSchema);
 export default UserModel;
 
