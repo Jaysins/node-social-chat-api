@@ -1,10 +1,6 @@
 import express from 'express';
 import connectDB from './config/db';
 import settings from './config/settings';
-import authRoutes from './routes/auth.route';
-import userRoutes from './routes/user.route';
-import chatRoutes from './routes/chat.route';
-import friendRoutes from './routes/friend.route';
 import authMiddleware from './middlewares/authMiddleware';
 import http from 'http';
 import { Server } from 'socket.io';
@@ -12,6 +8,14 @@ import path from 'path';
 import errorHandlerMiddleware from './errors/errorHandler';
 import initializeChatSocket from './sockets/chat.socket';
 import cors, { CorsOptions } from 'cors';
+
+import authRoutes from './routes/auth.route';
+import userRoutes from './routes/user.route';
+import chatRoutes from './routes/chat.route';
+import friendRoutes from './routes/friend.route';
+import notificationRoutes from './routes/notification.routes';
+import statRoutes from './routes/stat.routes';
+
 
 connectDB();
 
@@ -53,6 +57,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/chats', chatRoutes);
 app.use('/api/friends', friendRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/stats', statRoutes);
 app.use(errorHandlerMiddleware);
 
 initializeChatSocket(io);

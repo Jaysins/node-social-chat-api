@@ -3,10 +3,8 @@ import settings from '../config/settings';
 import { ChatSocket } from '../interfaces/global.interface';
 import { BadRequestError, UnAuthenticatedError } from '../errors';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import MessageService from '../services/message.service';
+import messageService from '../services/message.service';
 
-
-const messageService = new MessageService()
 
 // Export a function that initializes the chat socket logic
 export default function initializeChatSocket(io: Server) {

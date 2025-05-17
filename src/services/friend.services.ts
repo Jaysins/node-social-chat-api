@@ -2,6 +2,7 @@ import { BaseService } from '../base/service';
 import { BadRequestError, NotFoundError } from '../errors';
 import { IFriendDocument } from '../interfaces/friend.interface';
 import FriendModel from '../models/friend.model';
+import notificationService from './notification.services';
 
 
 class FriendService extends BaseService<IFriendDocument> {
@@ -21,7 +22,22 @@ class FriendService extends BaseService<IFriendDocument> {
     if (existing) {
       throw new BadRequestError("Friend request already pending");
     }
-    return this.model.create({ user, target });
+    const friendRequest = await this.model.create({ user, target });
+
+    const populatedRequest = await this.model
+      .findById(friendRequest._id)
+      .populate('user', 'username profileImage')
+      .exec();
+    if (populatedRequest) {
+      const sender = populatedRequest.user as any;
+      await notificationService.createForUser(
+        target,
+        'friend_request',
+        populatedRequest,
+        `${sender.username} sent you a friend request`
+      );
+    }
+    return friendRequest
   }
 
   /** Get all pending requests addressed *to* the given user */
